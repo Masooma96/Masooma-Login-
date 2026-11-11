@@ -121,7 +121,7 @@ for (const user of data.invalid) {
 
 ## Test coverage (24 tests)
 
-`npm test` runs everything in Google Chrome. Every input and expected value comes from a JSON file in [`test-data/`](test-data), and nothing is hardcoded in the tests.
+`npm test` runs the 5 login tests in Google Chrome, and `npm run test:full` runs all 24. Every input and expected value comes from a JSON file in [`test-data/`](test-data), and nothing is hardcoded in the tests.
 
 | Area | Data file | Tests | What is checked |
 | --- | --- | --- | --- |
@@ -142,10 +142,10 @@ npx playwright install
 ## Running tests
 
 ```bash
-npm test                 # all 24 tests in Chrome
+npm test                 # 5 login tests (2 valid + 3 invalid) in Chrome
+npm run test:headed      # same 5 tests with the browser visible
+npm run test:full        # all 24 tests in Chrome
 npm run test:all         # every test in Chromium, Firefox and WebKit
-npm run test:chromium    # Chromium only
-npm run test:headed      # watch the browser
 npm run test:smoke       # @smoke tests only
 npm run test:negative    # @negative tests only
 npm run typecheck        # TypeScript check

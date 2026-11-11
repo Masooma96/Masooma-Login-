@@ -3,14 +3,15 @@
   "version": "1.0.0",
   "description": "Playwright + TypeScript UI automation framework (Page Object Model, data-driven, fixtures, CI) for saucedemo.com",
   "scripts": {
-    "test": "playwright test --project=chrome",
-    "test:chromium": "playwright test --project=chromium",
-    "test:headed": "playwright test --project=chrome --headed",
+    "test": "playwright test --project=chrome --grep \"Login @login\"",
+    "test:headed": "playwright test --project=chrome --grep \"Login @login\" --headed --workers=1",
+    "test:full": "playwright test --project=chrome",
+    "test:full:headed": "playwright test --project=chrome --headed --workers=1",
     "test:smoke": "playwright test --project=chrome --grep @smoke",
     "test:negative": "playwright test --project=chrome --grep @negative",
+    "test:all": "playwright test --project=chromium --project=firefox --project=webkit",
     "typecheck": "tsc --noEmit",
-    "report": "playwright show-report",
-    "test:all": "playwright test --project=chromium --project=firefox --project=webkit"
+    "report": "playwright show-report"
   },
   "keywords": [
     "playwright",
