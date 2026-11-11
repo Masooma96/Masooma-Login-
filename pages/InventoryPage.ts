@@ -2,7 +2,6 @@ import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class InventoryPage extends BasePage {
-  readonly title: Locator;
   readonly items: Locator;
   readonly itemNames: Locator;
   readonly itemPrices: Locator;
@@ -13,8 +12,7 @@ export class InventoryPage extends BasePage {
   readonly logoutLink: Locator;
 
   constructor(page: Page) {
-    super(page);
-    this.title = page.getByTestId('title');
+    super(page, 'inventory');
     this.items = page.getByTestId('inventory-item');
     this.itemNames = page.getByTestId('inventory-item-name');
     this.itemPrices = page.getByTestId('inventory-item-price');
@@ -25,16 +23,16 @@ export class InventoryPage extends BasePage {
     this.logoutLink = page.getByTestId('logout-sidebar-link');
   }
 
-  async addToCart(productSlug: string) {
-    await this.page.getByTestId(`add-to-cart-${productSlug}`).click();
+  async addToCart(slug: string) {
+    await this.page.getByTestId(`add-to-cart-${slug}`).click();
   }
 
-  async removeFromCart(productSlug: string) {
-    await this.page.getByTestId(`remove-${productSlug}`).click();
+  async removeFromCart(slug: string) {
+    await this.page.getByTestId(`remove-${slug}`).click();
   }
 
-  async sortBy(value: 'az' | 'za' | 'lohi' | 'hilo') {
-    await this.sortDropdown.selectOption(value);
+  async sortBy(option: string) {
+    await this.sortDropdown.selectOption(option);
   }
 
   async getProductNames(): Promise<string[]> {

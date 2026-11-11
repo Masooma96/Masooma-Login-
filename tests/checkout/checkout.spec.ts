@@ -1,35 +1,55 @@
 import { test, expect } from '../../fixtures';
-import products from '../../test-data/products.json';
 import checkout from '../../test-data/checkout.json';
+import { getProducts, namesOf, round2, sumPrices } from '../../utils/helpers';
 
-test.describe('Cart & Checkout @checkout', () => {
-  test('cart lists the added products', async ({ loggedInInventory, cartPage }) => {
-    await loggedInInventory.addToCart(products.backpack);
-    await loggedInInventory.addToCart(products.boltTShirt);
-    await loggedInInventory.openCart();
-    await expect(cartPage.items).toHaveCount(2);
-    await expect(cartPage.itemNames).toContainText(['Sauce Labs Backpack', 'Sauce Labs Bolt T-Shirt']);
-  });
-
-  test('complete purchase end to end @smoke', async ({ page, loggedInInventory, cartPage, checkoutPage }) => {
-    await loggedInInventory.addToCart(products.backpack);
-    await loggedInInventory.openCart();
-    await cartPage.checkout();
-    await checkoutPage.fillInformation(checkout.valid);
-    await expect(page).toHaveURL(/checkout-step-two\.html/);
-    await expect(checkoutPage.itemTotal).toContainText('$29.99');
-    await checkoutPage.finish();
-    await expect(page).toHaveURL(/checkout-complete\.html/);
-    await expect(checkoutPage.completeHeader).toHaveText('Thank you for your order!');
-  });
-
+test.describe('Checkout validation @checkout', () => {
   for (const c of checkout.invalid) {
-    test(`checkout rejects ${c.name} @negative`, async ({ loggedInInventory, cartPage, checkoutPage }) => {
-      await loggedInInventory.addToCart(products.backpack);
+    test(`rejects ${c.name} @negative`, async ({ loggedInInventory, cartPage, checkoutPage }) => {
+      for (const p of getProducts(checkout.defaultProducts)) await loggedInInventory.addToCart(p.slug);
       await loggedInInventory.openCart();
       await cartPage.checkout();
+      await checkoutPage.expectLoaded();
+
       await checkoutPage.fillInformation(c);
+
       await expect(checkoutPage.errorMessage).toHaveText(c.error);
+      await checkoutPage.expectLoaded();
+    });
+  }
+});
+
+test.describe('Checkout and order validation @checkout', () => {
+  for (const order of checkout.orders) {
+    test(`${order.name} @smoke`, async ({
+      loggedInInventory,
+      cartPage,
+      checkoutPage,
+      overviewPage,
+      completePage,
+    }) => {
+      const products = getProducts(order.products);
+      const itemTotal = sumPrices(products);
+      const tax = round2(itemTotal * checkout.taxRate);
+      const total = round2(itemTotal + tax);
+
+      for (const p of products) await loggedInInventory.addToCart(p.slug);
+      await loggedInInventory.openCart();
+      await cartPage.checkout();
+      await checkoutPage.expectLoaded();
+      await checkoutPage.fillInformation(checkout.customer);
+
+      // Order summary: items, item total, tax and total all match the catalog
+      await overviewPage.expectLoaded();
+      expect((await overviewPage.getItemNames()).sort()).toEqual(namesOf(products).sort());
+      expect(await overviewPage.getItemTotal()).toBeCloseTo(itemTotal, 2);
+      expect(await overviewPage.getTax()).toBeCloseTo(tax, 2);
+      expect(await overviewPage.getTotal()).toBeCloseTo(total, 2);
+
+      // Confirmation, and the cart is emptied
+      await overviewPage.finish();
+      await completePage.expectLoaded();
+      await expect(completePage.completeHeader).toHaveText(checkout.confirmation.header);
+      await expect(loggedInInventory.cartBadge).toHaveCount(0);
     });
   }
 });

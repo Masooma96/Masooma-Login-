@@ -1,0 +1,8 @@
+{
+  "cases": [
+    { "name": "name A to Z", "option": "az", "by": "name", "direction": "asc" },
+    { "name": "name Z to A", "option": "za", "by": "name", "direction": "desc" },
+    { "name": "price low to high", "option": "lohi", "by": "price", "direction": "asc" },
+    { "name": "price high to low", "option": "hilo", "by": "price", "direction": "desc" }
+  ]
+}

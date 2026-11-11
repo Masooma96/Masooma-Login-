@@ -1,0 +1,8 @@
+{
+  "login": { "path": "/" },
+  "inventory": { "path": "/inventory.html", "title": "Products" },
+  "cart": { "path": "/cart.html", "title": "Your Cart" },
+  "checkoutStepOne": { "path": "/checkout-step-one.html", "title": "Checkout: Your Information" },
+  "checkoutStepTwo": { "path": "/checkout-step-two.html", "title": "Checkout: Overview" },
+  "checkoutComplete": { "path": "/checkout-complete.html", "title": "Checkout: Complete!" }
+}

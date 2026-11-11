@@ -121,21 +121,16 @@ for (const user of data.invalid) {
 
 ---
 
-## Test coverage
+## Test coverage (24 tests)
 
-`npm test` runs the **5 data-driven login tests** in Google Chrome. Every row comes from [`test-data/login.json`](test-data/login.json):
+`npm test` runs everything in Google Chrome. Every input and expected value comes from a JSON file in [`test-data/`](test-data), and nothing is hardcoded in the tests.
 
-| Username | Password | Expected result |
-| --- | --- | --- |
-| `standard_user` | `secret_sauce` | Login succeeds |
-| `problem_user` | `secret_sauce` | Login succeeds |
-| `masooma` | `test` | Invalid credentials error |
-| `fatima` | `abc` | Invalid credentials error |
-| `rizvi` | `223` | Invalid credentials error |
-
-The repo also contains inventory (sorting, cart badge) and cart/checkout tests (end-to-end purchase, form validation). Run everything, in all browsers, with `npm run test:all`.
-
----
+| Area | Data file | Tests | What is checked |
+| --- | --- | --- | --- |
+| Login and logout | `login.json` | 7 | 2 valid users log in, 3 invalid users get the expected error, and each valid user can log out |
+| Product sorting | `sorting.json`, `products.json` | 5 | Full catalog is listed, and name A-Z / Z-A and price low-high / high-low match the catalog |
+| Add and remove from cart | `cart.json` | 6 | Cart badge and cart contents after adding 1, 2 or all 6 products. Removing from the inventory page or the cart page |
+| Checkout and order validation | `checkout.json` | 6 | 3 missing-field errors. 3 full orders where item total, tax (8%) and total are calculated from the catalog and compared with the order summary, then the confirmation message is checked |
 
 ## Getting started
 
@@ -149,8 +144,8 @@ npx playwright install
 ## Running tests
 
 ```bash
-npm test                 # 5 data-driven login tests in Chrome
-npm run test:all         # every test, all browsers
+npm test                 # all 24 tests in Chrome
+npm run test:all         # every test in Chromium, Firefox and WebKit
 npm run test:chromium    # Chromium only
 npm run test:headed      # watch the browser
 npm run test:smoke       # @smoke tests only
