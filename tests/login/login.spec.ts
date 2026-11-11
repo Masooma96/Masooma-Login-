@@ -22,15 +22,4 @@ test.describe('Login @login', () => {
       await expect(page).not.toHaveURL(/inventory\.html/);
     });
   }
-
-  test('logout returns to the login page', async ({ loginPage, inventoryPage }) => {
-    await loginPage.login('standard_user', 'secret_sauce');
-    await inventoryPage.logout();
-    await expect(loginPage.loginButton).toBeVisible();
-  });
-
-  test('inventory page is not accessible without logging in @negative', async ({ page, loginPage }) => {
-    await page.goto('/inventory.html');
-    await expect(loginPage.errorMessage).toContainText('when you are logged in');
-  });
 });

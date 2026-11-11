@@ -119,26 +119,19 @@ for (const user of data.invalid) {
 
 ---
 
-## Test coverage (25 tests)
+## Test coverage
 
-| Feature | Tests | Scenarios |
-| --- | --- | --- |
-| Login | 14 | 3 valid users, 9 invalid cases (locked out, wrong password, unknown and unregistered users, empty fields), logout, direct access without login |
-| Inventory | 6 | 6 products shown, sort by name and price (both directions), cart badge add and remove |
-| Cart and checkout | 5 | Cart contents, full purchase end to end, 3 form-validation cases |
-
-### Login test data
+`npm test` runs the **5 data-driven login tests** in Google Chrome. Every row comes from [`test-data/login.json`](test-data/login.json):
 
 | Username | Password | Expected result |
 | --- | --- | --- |
 | `standard_user` | `secret_sauce` | Login succeeds |
 | `problem_user` | `secret_sauce` | Login succeeds |
-| `performance_glitch_user` | `secret_sauce` | Login succeeds |
-| `locked_out_user` | `secret_sauce` | Locked-out error |
 | `masooma` | `test` | Invalid credentials error |
 | `fatima` | `abc` | Invalid credentials error |
 | `rizvi` | `223` | Invalid credentials error |
-| empty username or password | any | "Username/Password is required" |
+
+The repo also contains inventory (sorting, cart badge) and cart/checkout tests (end-to-end purchase, form validation). Run everything, in all browsers, with `npm run test:all`.
 
 ---
 
@@ -154,7 +147,8 @@ npx playwright install
 ## Running tests
 
 ```bash
-npm test                 # all tests, all browsers
+npm test                 # 5 data-driven login tests in Chrome
+npm run test:all         # every test, all browsers
 npm run test:chromium    # Chromium only
 npm run test:headed      # watch the browser
 npm run test:smoke       # @smoke tests only
