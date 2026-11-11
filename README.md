@@ -1,6 +1,6 @@
 # SauceDemo UI Automation Framework
 
-![Playwright Tests](https://github.com/OWNER/REPO/actions/workflows/playwright.yml/badge.svg)
+![Playwright Tests](https://github.com/Masooma96/saucedemo-playwright-automation-framework/actions/workflows/playwright.yml/badge.svg)
 
 End-to-end UI test automation framework for [SauceDemo](https://www.saucedemo.com/), built with **Playwright** and **TypeScript**. It demonstrates a clean, scalable framework design: Page Object Model, data-driven testing, custom fixtures, tagging, cross-browser runs and CI.
 
@@ -43,8 +43,8 @@ End-to-end UI test automation framework for [SauceDemo](https://www.saucedemo.co
 ## Getting started
 
 ```bash
-git clone https://github.com/OWNER/REPO.git
-cd REPO
+git clone https://github.com/Masooma96/saucedemo-playwright-automation-framework.git
+cd saucedemo-playwright-automation-framework
 npm install
 npx playwright install
 ```
