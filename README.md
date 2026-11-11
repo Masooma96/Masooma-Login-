@@ -1,8 +1,6 @@
 # SauceDemo UI Automation Framework
 
 ![Playwright Tests](https://github.com/Masooma96/Masooma-Login-/actions/workflows/playwright.yml/badge.svg)
-![Playwright](https://img.shields.io/badge/Playwright-1.65-45ba4b?logo=playwright)
-![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white)
 
 An end-to-end UI test automation framework for **[SauceDemo](https://www.saucedemo.com/)**, built with **Playwright** and **TypeScript** using the **Page Object Model (POM)** and a **data-driven** testing approach.
 
