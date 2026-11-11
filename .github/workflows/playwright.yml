@@ -14,10 +14,14 @@ concurrency:
   group: ui-tests-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  # Run JavaScript actions on Node 24 (Node 20 is deprecated on GitHub runners)
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   test:
     name: Run UI tests (Chrome)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - name: Check out code
