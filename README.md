@@ -8,7 +8,7 @@ An end-to-end UI test automation framework for **[SauceDemo](https://www.saucede
 
 I built this as a portfolio project to show how I design a maintainable, scalable test framework from scratch: separating page logic from test logic, driving many test cases from one piece of code, and running everything automatically in CI.
 
-**[View the latest test report](https://masooma96.github.io/Masooma-Login-/)** (5 of 5 tests passing)
+**[View the latest test report](https://masooma96.github.io/Masooma-Login-/)** (24 of 24 tests passing)
 
 ---
 
