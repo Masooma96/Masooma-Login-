@@ -1,4 +1,6 @@
-name: Playwright Tests
+name: UI Test Suite
+
+run-name: UI Test Suite - ${{ github.event.head_commit.message || github.event.pull_request.title || 'manual run' }}
 
 on:
   push:
@@ -7,25 +9,40 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Cancel an older run of the same branch when a newer commit is pushed
+concurrency:
+  group: ui-tests-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
+    name: Run UI tests (Chrome)
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: npm
+
       - name: Install dependencies
         run: npm ci
+
       - name: Type check
         run: npm run typecheck
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chrome
+
+      - name: Install browser (Chromium)
+        run: npx playwright install --with-deps chromium
+
       - name: Run Playwright tests
         run: npm test
-      - uses: actions/upload-artifact@v4
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
