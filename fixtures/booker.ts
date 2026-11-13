@@ -1,6 +1,6 @@
 import { test as base, expect } from '@playwright/test';
-import { BookingClient } from '../api/BookingClient';
-import { Booking, CreateBookingResponse } from '../api/types';
+import { BookingClient } from '../tests/api/clients/BookingClient';
+import { Booking, CreateBookingResponse } from '../tests/api/clients/types';
 import auth from '../test-data/api/restful-booker/auth.json';
 import bookings from '../test-data/api/restful-booker/bookings.json';
 

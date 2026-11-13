@@ -4,13 +4,34 @@
   "customer": { "firstName": "Masooma", "lastName": "Fatima", "postalCode": "12345" },
   "defaultProducts": ["backpack"],
   "invalid": [
-    { "name": "missing first name", "firstName": "", "lastName": "Fatima", "postalCode": "12345", "error": "Error: First Name is required" },
-    { "name": "missing last name", "firstName": "Masooma", "lastName": "", "postalCode": "12345", "error": "Error: Last Name is required" },
-    { "name": "missing postal code", "firstName": "Masooma", "lastName": "Fatima", "postalCode": "", "error": "Error: Postal Code is required" }
+    {
+      "name": "missing first name",
+      "firstName": "",
+      "lastName": "Fatima",
+      "postalCode": "12345",
+      "error": "Error: First Name is required"
+    },
+    {
+      "name": "missing last name",
+      "firstName": "Masooma",
+      "lastName": "",
+      "postalCode": "12345",
+      "error": "Error: Last Name is required"
+    },
+    {
+      "name": "missing postal code",
+      "firstName": "Masooma",
+      "lastName": "Fatima",
+      "postalCode": "",
+      "error": "Error: Postal Code is required"
+    }
   ],
   "orders": [
     { "name": "single item order", "products": ["backpack"] },
     { "name": "multi item order", "products": ["backpack", "fleeceJacket", "onesie"] },
-    { "name": "all products order", "products": ["backpack", "bikeLight", "boltTShirt", "fleeceJacket", "onesie", "redTShirt"] }
+    {
+      "name": "all products order",
+      "products": ["backpack", "bikeLight", "boltTShirt", "fleeceJacket", "onesie", "redTShirt"]
+    }
   ]
 }

@@ -1,6 +1,6 @@
 import { test, expect } from '../../../fixtures/booker';
 import bookings from '../../../test-data/api/restful-booker/bookings.json';
-import { Booking } from '../../../api/types';
+import { Booking } from '../clients/types';
 
 const status = bookings.expectedStatus;
 
@@ -20,7 +20,10 @@ test.describe('API - Negative and security checks @api @negative', () => {
     expect(response.status()).toBe(status.forbidden);
   });
 
-  test('DELETE without a token is forbidden, and the booking is not removed', async ({ bookingClient, createdBooking }) => {
+  test('DELETE without a token is forbidden, and the booking is not removed', async ({
+    bookingClient,
+    createdBooking,
+  }) => {
     const response = await bookingClient.deleteBooking(createdBooking.bookingid);
     expect(response.status()).toBe(status.forbidden);
 

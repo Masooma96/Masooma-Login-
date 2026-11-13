@@ -1,5 +1,6 @@
 import { APIRequestContext, APIResponse } from '@playwright/test';
 import { Booking } from './types';
+import { withRetry } from './retry';
 
 /**
  * API "page object": one method per endpoint. Tests never build URLs or headers themselves,
@@ -26,11 +27,11 @@ export class BookingClient {
   }
 
   getBookingIds(query?: Record<string, string>): Promise<APIResponse> {
-    return this.request.get('/booking', { params: query, headers: BookingClient.json });
+    return withRetry(() => this.request.get('/booking', { params: query, headers: BookingClient.json }));
   }
 
   getBooking(id: number): Promise<APIResponse> {
-    return this.request.get(`/booking/${id}`, { headers: BookingClient.json });
+    return withRetry(() => this.request.get(`/booking/${id}`, { headers: BookingClient.json }));
   }
 
   createBooking(payload: Partial<Booking>): Promise<APIResponse> {

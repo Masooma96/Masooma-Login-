@@ -1,6 +1,6 @@
 import { test, expect } from '../../../fixtures/booker';
 import bookings from '../../../test-data/api/restful-booker/bookings.json';
-import { Booking } from '../../../api/types';
+import { Booking } from '../clients/types';
 
 const status = bookings.expectedStatus;
 

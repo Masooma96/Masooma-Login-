@@ -8,7 +8,10 @@ export type PageKey = keyof typeof pages;
 export abstract class BasePage {
   readonly title: Locator;
 
-  constructor(protected readonly page: Page, private readonly pageKey: PageKey) {
+  constructor(
+    protected readonly page: Page,
+    private readonly pageKey: PageKey,
+  ) {
     this.title = page.getByTestId('title');
   }
 

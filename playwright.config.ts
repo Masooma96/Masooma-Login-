@@ -7,16 +7,29 @@ export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
+
+  // ---- Flaky-test controls ----
+  // Retry only in CI. A test that fails then passes is reported as "flaky" (not hidden), with a trace attached.
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 2 : undefined,
-  reporter: [['list'], ['html', { open: 'never' }]],
+  // Explicit timeouts: generous enough for slow public sites, tight enough to fail fast on real problems.
+  timeout: 30_000,
+  expect: { timeout: 10_000 },
+
+  reporter: process.env.CI
+    ? [['github'], ['list'], ['html', { open: 'never' }]]
+    : [['list'], ['html', { open: 'never' }]],
+
   use: {
     baseURL: process.env.BASE_URL ?? 'https://www.saucedemo.com',
     testIdAttribute: 'data-test',
-    trace: 'retain-on-failure',
+    actionTimeout: 10_000,
+    navigationTimeout: 30_000,
+    trace: 'on-first-retry', // trace of the failed attempt, only recorded when a retry happens
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
   },
+
   projects: [
     // ---- UI projects (tests/ui) ----
     // Locally: installed Google Chrome. In CI: Playwright's bundled Chromium (faster, no Chrome install).

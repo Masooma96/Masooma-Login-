@@ -1,35 +1,50 @@
 {
   "name": "qa-automation-framework",
   "version": "1.0.0",
-  "description": "Playwright + TypeScript UI and API test automation framework: Page Object Model, data-driven tests, fixtures, schema validation, GitHub Actions CI",
+  "description": "UI and API test automation framework: Playwright, TypeScript, Page Object Model, data-driven tests, JSON Schema contract testing, GitHub Actions CI",
   "scripts": {
-    "test": "playwright test --project=chrome --grep \"Login @login\"",
-    "test:headed": "playwright test --project=chrome --grep \"Login @login\" --headed --workers=1",
-    "test:ui": "playwright test --project=chrome",
-    "test:ui:headed": "playwright test --project=chrome --headed --workers=1",
+    "test": "playwright test --project=chrome --grep-invert @quarantine",
+    "test:headed": "playwright test --project=chrome --grep-invert @quarantine --headed --workers=1",
     "test:api": "playwright test --project=api",
-    "test:suite": "playwright test --project=chrome --project=api --project=api-booker --grep \"Login @login|@api\"",
+    "test:api:booker": "playwright test --project=api-booker",
+    "test:api:all": "playwright test --project=api --project=api-booker",
+    "test:ci": "playwright test --project=chrome --project=api --project=api-booker --grep-invert @quarantine",
     "test:smoke": "playwright test --project=chrome --project=api --project=api-booker --grep @smoke",
     "test:negative": "playwright test --project=chrome --project=api --project=api-booker --grep @negative",
-    "test:cross-browser": "playwright test --project=chromium --project=firefox --project=webkit",
+    "test:cross-browser": "playwright test --project=chromium --project=firefox --project=webkit --grep-invert @quarantine",
+    "test:stability": "playwright test --project=chrome --project=api --project=api-booker --repeat-each=5 --grep-invert @quarantine",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
-    "report": "playwright show-report",
-    "test:api:booker": "playwright test --project=api-booker",
-    "test:api:all": "playwright test --project=api --project=api-booker"
+    "report": "playwright show-report"
   },
   "keywords": [
     "playwright",
     "typescript",
-    "automation",
+    "qa-automation",
+    "test-automation",
+    "api-testing",
     "page-object-model",
-    "data-driven"
+    "data-driven-testing",
+    "github-actions"
   ],
-  "license": "ISC",
+  "license": "MIT",
   "type": "commonjs",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.65.0",
     "@types/node": "^26.6.6",
     "ajv": "^8.20.0",
-    "typescript": "^5.6.0"
+    "eslint": "^10.14.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-playwright": "^2.12.2",
+    "prettier": "^3.10.1",
+    "typescript": "^5.6.0",
+    "typescript-eslint": "^8.72.2"
+  },
+  "author": "Masooma Fatima",
+  "engines": {
+    "node": ">=20"
   }
 }

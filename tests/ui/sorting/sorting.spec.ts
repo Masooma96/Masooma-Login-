@@ -16,7 +16,10 @@ test.describe('Product sorting @sorting', () => {
         const expected = sortValues(namesOf(catalog), c.direction);
         expect(await loggedInInventory.getProductNames()).toEqual(expected);
       } else {
-        const expected = sortValues(catalog.map((p) => p.price), c.direction);
+        const expected = sortValues(
+          catalog.map((p) => p.price),
+          c.direction,
+        );
         expect(await loggedInInventory.getProductPrices()).toEqual(expected);
       }
     });

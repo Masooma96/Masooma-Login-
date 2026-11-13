@@ -16,11 +16,46 @@
     { "name": "user 5", "path": "/users/5", "schema": "user", "id": 5 }
   ],
   "filters": [
-    { "name": "posts by user 1", "path": "/posts", "params": { "userId": "1" }, "field": "userId", "value": 1, "expectedCount": 10 },
-    { "name": "posts by user 7", "path": "/posts", "params": { "userId": "7" }, "field": "userId", "value": 7, "expectedCount": 10 },
-    { "name": "comments on post 1", "path": "/comments", "params": { "postId": "1" }, "field": "postId", "value": 1, "expectedCount": 5 },
-    { "name": "albums by user 2", "path": "/albums", "params": { "userId": "2" }, "field": "userId", "value": 2, "expectedCount": 10 },
-    { "name": "todos by user 1", "path": "/todos", "params": { "userId": "1" }, "field": "userId", "value": 1, "expectedCount": 20 }
+    {
+      "name": "posts by user 1",
+      "path": "/posts",
+      "params": { "userId": "1" },
+      "field": "userId",
+      "value": 1,
+      "expectedCount": 10
+    },
+    {
+      "name": "posts by user 7",
+      "path": "/posts",
+      "params": { "userId": "7" },
+      "field": "userId",
+      "value": 7,
+      "expectedCount": 10
+    },
+    {
+      "name": "comments on post 1",
+      "path": "/comments",
+      "params": { "postId": "1" },
+      "field": "postId",
+      "value": 1,
+      "expectedCount": 5
+    },
+    {
+      "name": "albums by user 2",
+      "path": "/albums",
+      "params": { "userId": "2" },
+      "field": "userId",
+      "value": 2,
+      "expectedCount": 10
+    },
+    {
+      "name": "todos by user 1",
+      "path": "/todos",
+      "params": { "userId": "1" },
+      "field": "userId",
+      "value": 1,
+      "expectedCount": 20
+    }
   ],
   "nested": [
     { "name": "comments of post 1", "path": "/posts/1/comments", "field": "postId", "value": 1, "expectedCount": 5 },
@@ -38,7 +73,10 @@
     "newPostId": 101,
     "create": [
       { "name": "short post", "payload": { "title": "QA automation", "body": "Testing with Playwright", "userId": 1 } },
-      { "name": "post by another user", "payload": { "title": "API testing", "body": "Contract and data-driven checks", "userId": 5 } }
+      {
+        "name": "post by another user",
+        "payload": { "title": "API testing", "body": "Contract and data-driven checks", "userId": 5 }
+      }
     ],
     "update": { "id": 1, "payload": { "id": 1, "title": "Updated title", "body": "Updated body", "userId": 1 } },
     "patch": [

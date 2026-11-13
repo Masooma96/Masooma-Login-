@@ -1,6 +1,6 @@
 import { test, expect } from '../../../fixtures/booker';
 import bookings from '../../../test-data/api/restful-booker/bookings.json';
-import { Booking } from '../../../api/types';
+import { Booking } from '../clients/types';
 import { validateSchema } from '../../../utils/schema';
 
 const status = bookings.expectedStatus;
@@ -73,7 +73,11 @@ test.describe('API - Update booking (PUT / PATCH) @api', () => {
 
   for (const c of bookings.patch) {
     test(`partial update: ${c.name}`, async ({ bookingClient, authToken, createdBooking }) => {
-      const response = await bookingClient.patchBooking(createdBooking.bookingid, c.changes as Partial<Booking>, authToken);
+      const response = await bookingClient.patchBooking(
+        createdBooking.bookingid,
+        c.changes as Partial<Booking>,
+        authToken,
+      );
 
       expect(response.status()).toBe(status.ok);
       // Changed fields are updated, the untouched fields keep their value
@@ -83,7 +87,11 @@ test.describe('API - Update booking (PUT / PATCH) @api', () => {
 });
 
 test.describe('API - Delete booking (DELETE) @api', () => {
-  test('deletes a booking and it can no longer be read @smoke', async ({ bookingClient, authToken, createdBooking }) => {
+  test('deletes a booking and it can no longer be read @smoke', async ({
+    bookingClient,
+    authToken,
+    createdBooking,
+  }) => {
     const deleted = await bookingClient.deleteBooking(createdBooking.bookingid, authToken);
     expect(deleted.status()).toBe(status.deleted);
 

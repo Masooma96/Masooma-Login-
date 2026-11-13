@@ -19,8 +19,7 @@ export const getProducts = (keys: string[]): Product[] => keys.map(getProduct);
 
 export const namesOf = (products: Product[]): string[] => products.map((p) => p.name);
 
-export const withoutKeys = (keys: string[], removed: string[]): string[] =>
-  keys.filter((k) => !removed.includes(k));
+export const withoutKeys = (keys: string[], removed: string[]): string[] => keys.filter((k) => !removed.includes(k));
 
 export const sumPrices = (products: Product[]): number =>
   products.reduce((total, p) => total + Math.round(p.price * 100), 0) / 100;

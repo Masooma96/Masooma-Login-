@@ -1,5 +1,5 @@
 import { test as base, expect } from '@playwright/test';
-import { JsonPlaceholderClient } from '../api/JsonPlaceholderClient';
+import { JsonPlaceholderClient } from '../tests/api/clients/JsonPlaceholderClient';
 
 type Fixtures = {
   api: JsonPlaceholderClient;

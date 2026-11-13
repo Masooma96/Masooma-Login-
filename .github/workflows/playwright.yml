@@ -1,17 +1,19 @@
-name: UI Test Suite
+name: QA Automation Pipeline
 
-run-name: UI Test Suite - ${{ github.event.head_commit.message || github.event.pull_request.title || 'manual run' }}
+run-name: QA Automation Pipeline - ${{ github.event.head_commit.message || github.event.pull_request.title || github.event_name }}
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  schedule:
+    - cron: '0 3 * * *' # nightly, 03:00 UTC: cross-browser + stability checks
   workflow_dispatch:
 
 # Cancel an older run of the same branch when a newer commit is pushed
 concurrency:
-  group: ui-tests-${{ github.ref }}
+  group: qa-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -19,32 +21,42 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  test:
-    name: Run UI tests (Chrome)
+  # 1. Fast quality gate: fails in seconds on style or type problems, before any browser starts
+  quality:
+    name: Lint, format and type check
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Type check
+      - run: npm ci
+      - name: ESLint
+        run: npm run lint
+      - name: Prettier
+        run: npm run format:check
+      - name: TypeScript
         run: npm run typecheck
 
+  # 2. Full regression: every UI test (Chromium) + both API suites
+  test:
+    name: UI + API tests
+    needs: quality
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+      - run: npm ci
       - name: Install browser (Chromium)
         run: npx playwright install --with-deps chromium
-
-      - name: Run UI (login) and API tests
-        run: npm run test:suite
-
+      - name: Run UI and API tests
+        run: npm run test:ci
       - name: Upload HTML report
         uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
@@ -52,3 +64,56 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+
+  # 3. Nightly only: UI tests in Firefox and WebKit
+  cross-browser:
+    name: UI on ${{ matrix.browser }} (nightly)
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    needs: quality
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [firefox, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+      - run: npm ci
+      - name: Install browser
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+      - name: Run UI tests
+        run: npx playwright test --project=${{ matrix.browser }} --grep-invert @quarantine
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: report-${{ matrix.browser }}
+          path: playwright-report/
+          retention-days: 14
+
+  # 4. Nightly only: run everything 5 times to expose flaky tests
+  stability:
+    name: Flakiness check (nightly)
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    needs: quality
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Repeat the suite 5 times, no retries
+        run: npm run test:stability
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: report-stability
+          path: playwright-report/
+          retention-days: 14

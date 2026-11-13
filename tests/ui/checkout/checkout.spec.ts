@@ -20,13 +20,7 @@ test.describe('Checkout validation @checkout', () => {
 
 test.describe('Checkout and order validation @checkout', () => {
   for (const order of checkout.orders) {
-    test(`${order.name} @smoke`, async ({
-      loggedInInventory,
-      cartPage,
-      checkoutPage,
-      overviewPage,
-      completePage,
-    }) => {
+    test(`${order.name} @smoke`, async ({ loggedInInventory, cartPage, checkoutPage, overviewPage, completePage }) => {
       const products = getProducts(order.products);
       const itemTotal = sumPrices(products);
       const tax = round2(itemTotal * checkout.taxRate);

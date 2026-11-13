@@ -2,11 +2,29 @@
   "add": [
     { "name": "one product", "products": ["backpack"] },
     { "name": "two products", "products": ["backpack", "bikeLight"] },
-    { "name": "all products", "products": ["backpack", "bikeLight", "boltTShirt", "fleeceJacket", "onesie", "redTShirt"] }
+    {
+      "name": "all products",
+      "products": ["backpack", "bikeLight", "boltTShirt", "fleeceJacket", "onesie", "redTShirt"]
+    }
   ],
   "remove": [
-    { "name": "one of two from inventory page", "add": ["backpack", "bikeLight"], "remove": ["backpack"], "removeFrom": "inventory" },
-    { "name": "all items from inventory page", "add": ["onesie", "boltTShirt"], "remove": ["onesie", "boltTShirt"], "removeFrom": "inventory" },
-    { "name": "one of three from cart page", "add": ["backpack", "fleeceJacket", "redTShirt"], "remove": ["fleeceJacket"], "removeFrom": "cart" }
+    {
+      "name": "one of two from inventory page",
+      "add": ["backpack", "bikeLight"],
+      "remove": ["backpack"],
+      "removeFrom": "inventory"
+    },
+    {
+      "name": "all items from inventory page",
+      "add": ["onesie", "boltTShirt"],
+      "remove": ["onesie", "boltTShirt"],
+      "removeFrom": "inventory"
+    },
+    {
+      "name": "one of three from cart page",
+      "add": ["backpack", "fleeceJacket", "redTShirt"],
+      "remove": ["fleeceJacket"],
+      "removeFrom": "cart"
+    }
   ]
 }

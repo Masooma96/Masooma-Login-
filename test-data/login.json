@@ -1,11 +1,29 @@
 {
   "valid": [
-    { "name": "standard user", "username": "standard_user", "password": "secret_sauce" },
-    { "name": "problem user", "username": "problem_user", "password": "secret_sauce" }
+    {
+      "name": "standard user",
+      "username": "standard_user",
+      "password": "secret_sauce"
+    }
   ],
   "invalid": [
-    { "name": "masooma", "username": "masooma", "password": "test", "error": "Epic sadface: Username and password do not match any user in this service" },
-    { "name": "fatima", "username": "fatima", "password": "abc", "error": "Epic sadface: Username and password do not match any user in this service" },
-    { "name": "rizvi", "username": "rizvi", "password": "223", "error": "Epic sadface: Username and password do not match any user in this service" }
+    {
+      "name": "masooma",
+      "username": "masooma",
+      "password": "test",
+      "error": "Epic sadface: Username and password do not match any user in this service"
+    },
+    {
+      "name": "fatima",
+      "username": "fatima",
+      "password": "abc",
+      "error": "Epic sadface: Username and password do not match any user in this service"
+    },
+    {
+      "name": "rizvi",
+      "username": "rizvi",
+      "password": "223",
+      "error": "Epic sadface: Username and password do not match any user in this service"
+    }
   ]
 }
