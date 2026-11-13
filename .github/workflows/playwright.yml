@@ -42,8 +42,8 @@ jobs:
       - name: Install browser (Chromium)
         run: npx playwright install --with-deps chromium
 
-      - name: Run Playwright tests
-        run: npm test
+      - name: Run UI (login) and API tests
+        run: npm run test:suite
 
       - name: Upload HTML report
         uses: actions/upload-artifact@v4

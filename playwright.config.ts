@@ -1,5 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const JSONPLACEHOLDER_URL = process.env.API_BASE_URL ?? 'https://jsonplaceholder.typicode.com';
+const BOOKER_URL = process.env.BOOKER_BASE_URL ?? 'https://restful-booker.herokuapp.com';
+
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
@@ -15,10 +18,19 @@ export default defineConfig({
     video: 'retain-on-failure',
   },
   projects: [
+    // ---- UI projects (tests/ui) ----
     // Locally: installed Google Chrome. In CI: Playwright's bundled Chromium (faster, no Chrome install).
-    { name: 'chrome', use: { ...devices['Desktop Chrome'], channel: process.env.CI ? undefined : 'chrome' } },
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
-    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+    {
+      name: 'chrome',
+      testMatch: 'ui/**/*.spec.ts',
+      use: { ...devices['Desktop Chrome'], channel: process.env.CI ? undefined : 'chrome' },
+    },
+    { name: 'chromium', testMatch: 'ui/**/*.spec.ts', use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox', testMatch: 'ui/**/*.spec.ts', use: { ...devices['Desktop Firefox'] } },
+    { name: 'webkit', testMatch: 'ui/**/*.spec.ts', use: { ...devices['Desktop Safari'] } },
+
+    // ---- API projects (tests/api): no browser needed ----
+    { name: 'api', testMatch: 'api/jsonplaceholder/**/*.spec.ts', use: { baseURL: JSONPLACEHOLDER_URL } },
+    { name: 'api-booker', testMatch: 'api/restful-booker/**/*.spec.ts', use: { baseURL: BOOKER_URL } },
   ],
 });

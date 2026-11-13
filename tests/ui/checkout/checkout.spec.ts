@@ -1,6 +1,6 @@
-import { test, expect } from '../../fixtures';
-import checkout from '../../test-data/checkout.json';
-import { getProducts, namesOf, round2, sumPrices } from '../../utils/helpers';
+import { test, expect } from '../../../fixtures';
+import checkout from '../../../test-data/checkout.json';
+import { getProducts, namesOf, round2, sumPrices } from '../../../utils/helpers';
 
 test.describe('Checkout validation @checkout', () => {
   for (const c of checkout.invalid) {

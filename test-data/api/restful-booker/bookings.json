@@ -1,0 +1,79 @@
+{
+  "maxResponseTimeMs": 8000,
+  "expectedStatus": {
+    "ok": 200,
+    "created": 200,
+    "deleted": 201,
+    "forbidden": 403,
+    "notFound": 404,
+    "invalidPayload": 500
+  },
+  "nonExistentId": 99999999,
+  "create": [
+    {
+      "name": "booking with breakfast",
+      "payload": {
+        "firstname": "Masooma",
+        "lastname": "Fatima",
+        "totalprice": 150,
+        "depositpaid": true,
+        "bookingdates": { "checkin": "2026-12-01", "checkout": "2026-12-05" },
+        "additionalneeds": "Breakfast"
+      }
+    },
+    {
+      "name": "booking without deposit",
+      "payload": {
+        "firstname": "Sara",
+        "lastname": "Rizvi",
+        "totalprice": 320,
+        "depositpaid": false,
+        "bookingdates": { "checkin": "2027-01-10", "checkout": "2027-01-17" },
+        "additionalneeds": "Late checkout"
+      }
+    },
+    {
+      "name": "booking with zero price",
+      "payload": {
+        "firstname": "Ali",
+        "lastname": "Khan",
+        "totalprice": 0,
+        "depositpaid": true,
+        "bookingdates": { "checkin": "2027-02-01", "checkout": "2027-02-02" },
+        "additionalneeds": "None"
+      }
+    }
+  ],
+  "update": {
+    "name": "full update replaces every field",
+    "payload": {
+      "firstname": "Updated",
+      "lastname": "Guest",
+      "totalprice": 999,
+      "depositpaid": false,
+      "bookingdates": { "checkin": "2027-03-01", "checkout": "2027-03-10" },
+      "additionalneeds": "Airport pickup"
+    }
+  },
+  "patch": [
+    { "name": "change names", "changes": { "firstname": "Patched", "lastname": "Name" } },
+    { "name": "change price and deposit", "changes": { "totalprice": 777, "depositpaid": false } },
+    { "name": "change dates", "changes": { "bookingdates": { "checkin": "2027-05-10", "checkout": "2027-05-15" } } }
+  ],
+  "filters": [
+    { "name": "by first name", "field": "firstname" },
+    { "name": "by last name", "field": "lastname" }
+  ],
+  "invalidCreate": [
+    { "name": "empty body", "payload": {} },
+    {
+      "name": "missing last name",
+      "payload": {
+        "firstname": "Only",
+        "totalprice": 10,
+        "depositpaid": true,
+        "bookingdates": { "checkin": "2027-01-01", "checkout": "2027-01-02" }
+      }
+    }
+  ]
+}

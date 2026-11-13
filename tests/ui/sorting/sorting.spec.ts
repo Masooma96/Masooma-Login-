@@ -1,6 +1,6 @@
-import { test, expect } from '../../fixtures';
-import sorting from '../../test-data/sorting.json';
-import { catalog, namesOf, sortValues } from '../../utils/helpers';
+import { test, expect } from '../../../fixtures';
+import sorting from '../../../test-data/sorting.json';
+import { catalog, namesOf, sortValues } from '../../../utils/helpers';
 
 test.describe('Product sorting @sorting', () => {
   test('lists every product in the catalog', async ({ loggedInInventory }) => {

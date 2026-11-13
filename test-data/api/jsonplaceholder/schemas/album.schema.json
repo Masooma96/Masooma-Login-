@@ -1,0 +1,10 @@
+{
+  "$id": "album",
+  "type": "object",
+  "required": ["userId", "id", "title"],
+  "properties": {
+    "userId": { "type": "integer" },
+    "id": { "type": "integer" },
+    "title": { "type": "string" }
+  }
+}

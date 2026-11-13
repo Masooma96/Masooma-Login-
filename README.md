@@ -1,25 +1,33 @@
-# SauceDemo UI Automation Framework
+# QA Automation Framework: UI + API
 
-![Playwright Tests](https://github.com/Masooma96/Masooma-Login-/actions/workflows/playwright.yml/badge.svg)
+![UI Test Suite](https://github.com/Masooma96/Masooma-Login-/actions/workflows/playwright.yml/badge.svg)
 
-An end-to-end UI test automation framework for **[SauceDemo](https://www.saucedemo.com/)**, built with **Playwright** and **TypeScript** using the **Page Object Model (POM)** and a **data-driven** testing approach.
+A test automation framework built with **Playwright** and **TypeScript**. It covers two layers of a product:
 
-I built this as a portfolio project to show how I design a maintainable, scalable test framework from scratch: separating page logic from test logic, driving many test cases from one piece of code, and running everything automatically in CI.
+- **UI tests** for [SauceDemo](https://www.saucedemo.com/), an e-commerce demo site (login, logout, sorting, cart, checkout).
+- **API tests** for [JSONPlaceholder](https://jsonplaceholder.typicode.com/) and [Restful-Booker](https://restful-booker.herokuapp.com/apidoc/index.html), public practice APIs (REST methods, filters, schema validation, authentication, negative and security checks).
+
+It is designed to show how I structure a maintainable test suite: page objects, data-driven tests, fixtures, contract testing and a CI pipeline.
 
 **[See the latest CI test runs](https://github.com/Masooma96/Masooma-Login-/actions)** (the HTML report is attached to each run as an artifact)
 
 ---
 
-## About the application under test
+## What this framework demonstrates
 
-[SauceDemo](https://www.saucedemo.com/) (by Sauce Labs) is a demo e-commerce site made for practising test automation. It has a login page, a product catalogue, a shopping cart and a multi-step checkout, which makes it a good target for covering a full user journey.
-
-| Page | URL | What I test |
-| --- | --- | --- |
-| Login | `/` | Valid and invalid credentials, error messages, logout, blocked direct access |
-| Inventory | `/inventory.html` | Product list, sorting, add/remove to cart, cart badge |
-| Cart | `/cart.html` | Cart contents |
-| Checkout | `/checkout-step-one.html` to `/checkout-complete.html` | Form validation, order totals, full purchase |
+| Concept | Where to look |
+| --- | --- |
+| Page Object Model (UI) | [`pages/`](pages) |
+| API client layer (the API version of POM) | [`api/`](api) |
+| Data-driven testing, with no hardcoded values in tests | [`test-data/`](test-data) |
+| Custom fixtures, setup and teardown | [`fixtures/`](fixtures) |
+| Contract testing with JSON Schema | [`test-data/api/*/schemas`](test-data/api), [`utils/schema.ts`](utils/schema.ts) |
+| End-to-end API flow (create, read, update, delete, verify) | [`tests/api/restful-booker/booking-flow.spec.ts`](tests/api/restful-booker/booking-flow.spec.ts) |
+| Positive, negative and security tests | tagged `@negative` |
+| Test tagging and selective runs | `@smoke`, `@negative`, `@api`, `@login` and more |
+| Cross-browser testing | Chromium, Firefox, WebKit |
+| CI/CD | [`.github/workflows/playwright.yml`](.github/workflows/playwright.yml) |
+| Failure diagnostics | trace, screenshot and video kept on failure |
 
 ---
 
@@ -27,77 +35,13 @@ I built this as a portfolio project to show how I design a maintainable, scalabl
 
 | Area | Choice |
 | --- | --- |
-| Test runner | [Playwright Test](https://playwright.dev/) |
+| Test runner | Playwright Test |
 | Language | TypeScript (strict mode) |
-| Design pattern | Page Object Model with a shared `BasePage` |
-| Test data | JSON files (data-driven) |
+| UI pattern | Page Object Model with a shared `BasePage` |
+| API pattern | Client classes built on Playwright's `APIRequestContext` |
+| Contract testing | Ajv (JSON Schema) |
+| Test data | JSON files |
 | CI/CD | GitHub Actions |
-| Browsers | Chromium, Firefox, WebKit |
-| Reports | Playwright HTML report, plus trace, screenshot and video on failure |
-
----
-
-## How I built it
-
-### 1. Page Object Model (POM)
-
-Instead of writing selectors and clicks inside every test, each page of the site has its own class in [`pages/`](pages). The class holds the page's **locators** and the **actions** a user can take on it.
-
-```
-BasePage              shared behaviour (navigate, current URL)
- ├── LoginPage        username/password fields, login()
- ├── InventoryPage    sort, add to cart, logout
- ├── CartPage         cart items, checkout()
- └── CheckoutPage     fill form, finish()
-```
-
-A test then reads like a plain description of what a user does:
-
-```ts
-await loginPage.goto();
-await loginPage.login('standard_user', 'secret_sauce');
-await expect(inventoryPage.title).toHaveText('Products');
-```
-
-**Why it matters:** if the login button changes, I fix one line in `LoginPage.ts` and every test keeps working, with no edits across dozens of tests.
-
-### 2. Data-driven testing
-
-Test data lives in JSON files in [`test-data/`](test-data), not in the test code. A test loops over the data, and **each row becomes its own test** with its own name and result in the report.
-
-From [`test-data/login.json`](test-data/login.json):
-
-```json
-{ "name": "wrong password", "username": "standard_user", "password": "wrong_password",
-  "error": "Epic sadface: Username and password do not match any user in this service" }
-```
-
-From [`tests/login/login.spec.ts`](tests/login/login.spec.ts):
-
-```ts
-for (const user of data.invalid) {
-  test(`fails for ${user.name} @negative`, async ({ page, loginPage }) => {
-    await loginPage.login(user.username, user.password);
-    await expect(loginPage.errorMessage).toHaveText(user.error);
-  });
-}
-```
-
-**Why it matters:** to add a new login case, I add one row to the JSON file. I don't write any new code.
-
-### 3. Custom fixtures
-
-[`fixtures/index.ts`](fixtures/index.ts) creates the page objects and hands them to each test. It also provides a `loggedInInventory` fixture that gives a ready, logged-in session, so tests for the cart and checkout don't repeat the login steps.
-
-### 4. Tags, locators and diagnostics
-
-- **Tags** (`@smoke`, `@negative`, `@login`, `@inventory`, `@checkout`) let me run any subset of tests.
-- **Locators** use `getByTestId`, configured for the site's `data-test` attribute, which is more stable than CSS or XPath.
-- **Failure diagnostics:** Playwright keeps a trace, screenshot and video when a test fails.
-
-### 5. Continuous integration
-
-[`.github/workflows/playwright.yml`](.github/workflows/playwright.yml) runs on every push and pull request. It installs dependencies, type-checks the code, runs the whole suite in all three browsers and uploads the HTML report as an artifact.
 
 ---
 
@@ -105,30 +49,79 @@ for (const user of data.invalid) {
 
 ```
 .
-├── pages/                 # Page Objects (BasePage, Login, Inventory, Cart, Checkout)
-├── fixtures/              # Custom fixtures (page objects + logged-in session)
-├── test-data/             # JSON data: users, login cases, checkout, products
+├── pages/                    # UI page objects (Base, Login, Inventory, Cart, Checkout...)
+├── api/                      # API clients (JsonPlaceholderClient, BookingClient) and types
+├── fixtures/                 # Fixtures: UI pages, API clients, logged-in session, auto-cleanup booking
+├── utils/                    # Helpers and JSON-schema validator
+├── test-data/
+│   ├── *.json                # UI data: login, products, sorting, cart, checkout, page routes
+│   └── api/
+│       ├── jsonplaceholder/  # API data and schemas
+│       └── restful-booker/   # API data and schemas
 ├── tests/
-│   ├── login/             # Valid and invalid login, logout, access control
-│   ├── inventory/         # Product list, sorting, cart badge
-│   └── checkout/          # Cart, end-to-end purchase, form validation
-├── .github/workflows/     # CI pipeline
-├── playwright.config.ts   # Browsers, reporters, trace/screenshot/video
-└── tsconfig.json
+│   ├── ui/                   # login, sorting, cart, checkout
+│   └── api/
+│       ├── jsonplaceholder/  # collections, single, filters, nested, CRUD
+│       └── restful-booker/   # auth, CRUD, negative, end-to-end flow
+├── .github/workflows/        # CI pipeline
+└── playwright.config.ts      # Projects: UI browsers and the two API suites
 ```
 
 ---
 
-## Test coverage (24 tests)
+## How it works
 
-`npm test` runs the 5 login tests in Google Chrome, and `npm run test:full` runs all 24. Every input and expected value comes from a JSON file in [`test-data/`](test-data), and nothing is hardcoded in the tests.
+### UI: Page Object Model and data-driven tests
 
-| Area | Data file | Tests | What is checked |
+Each page of the site is a class holding its locators and actions. Page URLs and titles come from [`test-data/pages.json`](test-data/pages.json), and every page can check itself with `expectLoaded()`. A test reads like a description of what a user does:
+
+```ts
+await loginPage.open();
+await loginPage.login(user.username, user.password);
+await inventoryPage.expectLoaded();
+```
+
+Each row in a JSON file becomes its own test. To add a login case, add one row to [`test-data/login.json`](test-data/login.json) and write no code.
+
+### API: client layer, schemas and data
+
+A client class wraps each endpoint, so tests never build URLs or headers:
+
+```ts
+const response = await api.get('/posts', { userId: '1' });
+expect(response.status()).toBe(status.ok);
+```
+
+Responses are checked for the status code, response time, JSON content type and **JSON Schema**, so a changed or missing field fails the test:
+
+```ts
+expect(validateSchema('post', item)).toEqual([]);
+```
+
+### Fixtures: setup and teardown
+
+`createdBooking` creates a booking before a test and deletes it afterwards, so every test is independent and leaves no data behind. `loggedInInventory` gives a UI test an already logged-in session.
+
+### A note on JSONPlaceholder
+
+JSONPlaceholder **fakes** write operations: it answers a POST, PUT, PATCH or DELETE like a real API but stores nothing. Its write tests therefore check the response contract and not saved data. The Restful-Booker tests do check real persistence, because that API stores data.
+
+---
+
+## Test coverage
+
+| Layer | Suite | Tests | What is checked |
 | --- | --- | --- | --- |
-| Login and logout | `login.json` | 7 | 2 valid users log in, 3 invalid users get the expected error, and each valid user can log out |
-| Product sorting | `sorting.json`, `products.json` | 5 | Full catalog is listed, and name A-Z / Z-A and price low-high / high-low match the catalog |
-| Add and remove from cart | `cart.json` | 6 | Cart badge and cart contents after adding 1, 2 or all 6 products. Removing from the inventory page or the cart page |
-| Checkout and order validation | `checkout.json` | 6 | 3 missing-field errors. 3 full orders where item total, tax (8%) and total are calculated from the catalog and compared with the order summary, then the confirmation message is checked |
+| UI | Login and logout | 7 | 2 valid users, 3 invalid users with the expected error, logout for each valid user |
+| UI | Product sorting | 5 | Full catalog, name A-Z / Z-A, price low-high / high-low |
+| UI | Cart | 6 | Add 1, 2 or all products, remove from the inventory page and from the cart page |
+| UI | Checkout | 6 | Missing-field errors, full orders with item total, tax and total calculated from the catalog, confirmation message |
+| API | JSONPlaceholder | 28 | 5 collections with schema checks, single resources, query filters, nested resources, 404s, POST / PUT / PATCH / DELETE |
+| API | Restful-Booker | 23 | Authentication, full CRUD, schema validation, filters, missing token (403), invalid payloads, end-to-end lifecycle |
+
+UI tests run in Chrome. `npm test` runs the 5 login tests only, and `npm run test:ui` runs all 24 UI tests.
+
+---
 
 ## Getting started
 
@@ -142,27 +135,21 @@ npx playwright install
 ## Running tests
 
 ```bash
-npm test                 # 5 login tests (2 valid + 3 invalid) in Chrome
-npm run test:headed      # same 5 tests with the browser visible
-npm run test:full        # all 24 tests in Chrome
-npm run test:all         # every test in Chromium, Firefox and WebKit
-npm run test:smoke       # @smoke tests only
-npm run test:negative    # @negative tests only
-npm run typecheck        # TypeScript check
-npm run report           # open the last HTML report
+npm test                  # 5 UI login tests in Chrome
+npm run test:headed       # same 5 tests with the browser visible
+npm run test:ui           # all 24 UI tests
+npm run test:api          # JSONPlaceholder API tests
+npm run test:api:booker   # Restful-Booker API tests
+npm run test:api:all      # both API suites
+npm run test:suite        # what CI runs: 5 UI login tests + all API tests
+npm run test:smoke        # only @smoke tests
+npm run test:negative     # only @negative tests
+npm run test:cross-browser  # UI tests in Chromium, Firefox and WebKit
+npm run typecheck         # TypeScript check
+npm run report            # open the last HTML report
 ```
 
-Run a single test by name:
-
-```bash
-npx playwright test -g "succeeds for standard user" --project=chromium --headed
-```
-
-Point the suite at another environment with `BASE_URL`:
-
-```bash
-BASE_URL=https://staging.example.com npm test
-```
+Point the suites at another environment with `BASE_URL`, `API_BASE_URL` or `BOOKER_BASE_URL`.
 
 ---
 

@@ -1,0 +1,12 @@
+{
+  "$id": "comment",
+  "type": "object",
+  "required": ["postId", "id", "name", "email", "body"],
+  "properties": {
+    "postId": { "type": "integer" },
+    "id": { "type": "integer" },
+    "name": { "type": "string" },
+    "email": { "type": "string", "pattern": "^[^@\\s]+@[^@\\s]+$" },
+    "body": { "type": "string" }
+  }
+}

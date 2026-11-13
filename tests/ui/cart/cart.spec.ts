@@ -1,6 +1,6 @@
-import { test, expect } from '../../fixtures';
-import cart from '../../test-data/cart.json';
-import { getProducts, namesOf, withoutKeys } from '../../utils/helpers';
+import { test, expect } from '../../../fixtures';
+import cart from '../../../test-data/cart.json';
+import { getProducts, namesOf, withoutKeys } from '../../../utils/helpers';
 
 test.describe('Add products to cart @cart', () => {
   for (const c of cart.add) {

@@ -1,17 +1,21 @@
 {
-  "name": "saucedemo-playwright-framework",
+  "name": "qa-automation-framework",
   "version": "1.0.0",
-  "description": "Playwright + TypeScript UI automation framework (Page Object Model, data-driven, fixtures, CI) for saucedemo.com",
+  "description": "Playwright + TypeScript UI and API test automation framework: Page Object Model, data-driven tests, fixtures, schema validation, GitHub Actions CI",
   "scripts": {
     "test": "playwright test --project=chrome --grep \"Login @login\"",
     "test:headed": "playwright test --project=chrome --grep \"Login @login\" --headed --workers=1",
-    "test:full": "playwright test --project=chrome",
-    "test:full:headed": "playwright test --project=chrome --headed --workers=1",
-    "test:smoke": "playwright test --project=chrome --grep @smoke",
-    "test:negative": "playwright test --project=chrome --grep @negative",
-    "test:all": "playwright test --project=chromium --project=firefox --project=webkit",
+    "test:ui": "playwright test --project=chrome",
+    "test:ui:headed": "playwright test --project=chrome --headed --workers=1",
+    "test:api": "playwright test --project=api",
+    "test:suite": "playwright test --project=chrome --project=api --project=api-booker --grep \"Login @login|@api\"",
+    "test:smoke": "playwright test --project=chrome --project=api --project=api-booker --grep @smoke",
+    "test:negative": "playwright test --project=chrome --project=api --project=api-booker --grep @negative",
+    "test:cross-browser": "playwright test --project=chromium --project=firefox --project=webkit",
     "typecheck": "tsc --noEmit",
-    "report": "playwright show-report"
+    "report": "playwright show-report",
+    "test:api:booker": "playwright test --project=api-booker",
+    "test:api:all": "playwright test --project=api --project=api-booker"
   },
   "keywords": [
     "playwright",
@@ -25,6 +29,7 @@
   "devDependencies": {
     "@playwright/test": "^1.65.0",
     "@types/node": "^26.6.6",
+    "ajv": "^8.20.0",
     "typescript": "^5.6.0"
   }
 }

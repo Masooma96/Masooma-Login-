@@ -1,0 +1,50 @@
+{
+  "maxResponseTimeMs": 8000,
+  "expectedStatus": { "ok": 200, "created": 201, "notFound": 404 },
+  "resources": [
+    { "name": "posts", "path": "/posts", "schema": "post", "expectedCount": 100 },
+    { "name": "comments", "path": "/comments", "schema": "comment", "expectedCount": 500 },
+    { "name": "albums", "path": "/albums", "schema": "album", "expectedCount": 100 },
+    { "name": "todos", "path": "/todos", "schema": "todo", "expectedCount": 200 },
+    { "name": "users", "path": "/users", "schema": "user", "expectedCount": 10 }
+  ],
+  "single": [
+    { "name": "post 1", "path": "/posts/1", "schema": "post", "id": 1 },
+    { "name": "post 100", "path": "/posts/100", "schema": "post", "id": 100 },
+    { "name": "comment 7", "path": "/comments/7", "schema": "comment", "id": 7 },
+    { "name": "todo 10", "path": "/todos/10", "schema": "todo", "id": 10 },
+    { "name": "user 5", "path": "/users/5", "schema": "user", "id": 5 }
+  ],
+  "filters": [
+    { "name": "posts by user 1", "path": "/posts", "params": { "userId": "1" }, "field": "userId", "value": 1, "expectedCount": 10 },
+    { "name": "posts by user 7", "path": "/posts", "params": { "userId": "7" }, "field": "userId", "value": 7, "expectedCount": 10 },
+    { "name": "comments on post 1", "path": "/comments", "params": { "postId": "1" }, "field": "postId", "value": 1, "expectedCount": 5 },
+    { "name": "albums by user 2", "path": "/albums", "params": { "userId": "2" }, "field": "userId", "value": 2, "expectedCount": 10 },
+    { "name": "todos by user 1", "path": "/todos", "params": { "userId": "1" }, "field": "userId", "value": 1, "expectedCount": 20 }
+  ],
+  "nested": [
+    { "name": "comments of post 1", "path": "/posts/1/comments", "field": "postId", "value": 1, "expectedCount": 5 },
+    { "name": "posts of user 1", "path": "/users/1/posts", "field": "userId", "value": 1, "expectedCount": 10 },
+    { "name": "albums of user 1", "path": "/users/1/albums", "field": "userId", "value": 1, "expectedCount": 10 },
+    { "name": "todos of user 1", "path": "/users/1/todos", "field": "userId", "value": 1, "expectedCount": 20 }
+  ],
+  "notFound": [
+    { "name": "missing post", "path": "/posts/99999" },
+    { "name": "missing user", "path": "/users/99999" },
+    { "name": "missing comment", "path": "/comments/99999" }
+  ],
+  "crud": {
+    "postsPath": "/posts",
+    "newPostId": 101,
+    "create": [
+      { "name": "short post", "payload": { "title": "QA automation", "body": "Testing with Playwright", "userId": 1 } },
+      { "name": "post by another user", "payload": { "title": "API testing", "body": "Contract and data-driven checks", "userId": 5 } }
+    ],
+    "update": { "id": 1, "payload": { "id": 1, "title": "Updated title", "body": "Updated body", "userId": 1 } },
+    "patch": [
+      { "name": "change title only", "id": 1, "changes": { "title": "Patched title" } },
+      { "name": "change body only", "id": 2, "changes": { "body": "Patched body" } }
+    ],
+    "delete": { "id": 1 }
+  }
+}
